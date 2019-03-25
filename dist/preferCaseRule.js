@@ -10,6 +10,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
+var Case = require("case");
 var Lint = require("tslint");
 var Rule = /** @class */ (function (_super) {
     __extends(Rule, _super);
@@ -19,7 +20,6 @@ var Rule = /** @class */ (function (_super) {
     Rule.prototype.apply = function (sourceFile) {
         return this.applyWithWalker(new NoImportsWalker(sourceFile, this.getOptions()));
     };
-    Rule.FAILURE_STRING = "import statement forbidden";
     return Rule;
 }(Lint.Rules.AbstractRule));
 exports.Rule = Rule;
@@ -29,22 +29,40 @@ var NoImportsWalker = /** @class */ (function (_super) {
     function NoImportsWalker() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    /*
-    public visitImportDeclaration(node: ts.ImportDeclaration) {
-      // create a failure at the current position
-      this.addFailure(
-        this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING)
-      );
-  
-      console.log("bkla");
-  
-      // call the base version of this visitor to actually parse this node
-      super.visitImportDeclaration(node);
-    }
-    */
     NoImportsWalker.prototype.visitEnumDeclaration = function (node) {
-        console.log(node.name.escapedText, node.members.forEach(function (e) { return console.log(e.name.escapedText); }));
+        var _this = this;
+        // check enum name
+        if (!this.isCase(node.name.escapedText)) {
+            this.report(node, "Enum title " + node.name.escapedText);
+        }
+        // check enum members for casing
+        node.members.forEach(function (e) {
+            if (!_this.isCase(e.name.escapedText)) {
+                _this.report(e, "Enum member " + e.name.escapedText);
+            }
+        });
         _super.prototype.visitEnumDeclaration.call(this, node);
+    };
+    NoImportsWalker.prototype.report = function (node, text) {
+        this.addFailure(this.createFailure(node.getStart(), node.getWidth(), text + " should be pascal case."));
+    };
+    NoImportsWalker.prototype.isCase = function (name) {
+        var preferedCase = this.getOptions()[0]; // "pascal|camel|snake|kebab";
+        var caseConverter = Case.pascal;
+        switch (preferedCase) {
+            case "camel":
+                caseConverter = Case.camel;
+                break;
+            case "snake":
+                caseConverter = Case.snake;
+                break;
+            case "kebab":
+                caseConverter = Case.kebab;
+                break;
+            default:
+                break;
+        }
+        return name === caseConverter(name.toString());
     };
     return NoImportsWalker;
 }(Lint.RuleWalker));
