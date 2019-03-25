@@ -50,6 +50,9 @@ var EnumCaseWalker = /** @class */ (function (_super) {
         this.addFailure(this.createFailure(node.getStart(), node.getWidth(), text + " should be " + this.getOptions()[0] + " case."));
     };
     EnumCaseWalker.prototype.isCase = function (name) {
+        if (!name) {
+            return;
+        }
         var preferedCase = this.getOptions()[0]; // "pascal|camel|snake|kebab";
         var caseConverter = Case.pascal;
         switch (preferedCase) {

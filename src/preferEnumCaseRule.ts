@@ -39,6 +39,10 @@ class EnumCaseWalker extends Lint.RuleWalker {
   }
 
   private isCase(name: ts.__String): boolean {
+    if (!name) {
+      return;
+    }
+
     const preferedCase = this.getOptions()[0]; // "pascal|camel|snake|kebab";
     let caseConverter = Case.pascal;
 
