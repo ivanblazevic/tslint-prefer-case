@@ -1,0 +1,25 @@
+{
+  "name": "tslint-prefer-case",
+  "version": "1.0.0",
+  "description": "TSLint prefer case rule",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tslint",
+    "prefer",
+    "case",
+    "force",
+    "enum"
+  ],
+  "author": "Ivan Blazevic",
+  "license": "ISC",
+  "devDependencies": {
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.4000"
+  },
+  "dependencies": {
+    "pascal-case": "^2.0.1"
+  }
+}
