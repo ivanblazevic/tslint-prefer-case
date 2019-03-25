@@ -4,7 +4,7 @@
   "description": "TSLint prefer case rule",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "tsc -w"
   },
   "keywords": [
     "tslint",
@@ -16,6 +16,7 @@
   "author": "Ivan Blazevic",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^11.11.6",
     "tslint": "^5.14.0",
     "typescript": "^3.3.4000"
   },

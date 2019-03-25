@@ -1,15 +1,18 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Case = require("case");
 var Lint = require("tslint");
 var Rule = /** @class */ (function (_super) {
@@ -18,18 +21,18 @@ var Rule = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Rule.prototype.apply = function (sourceFile) {
-        return this.applyWithWalker(new NoImportsWalker(sourceFile, this.getOptions()));
+        return this.applyWithWalker(new EnumCaseWalker(sourceFile, this.getOptions()));
     };
     return Rule;
 }(Lint.Rules.AbstractRule));
 exports.Rule = Rule;
 // The walker takes care of all the work.
-var NoImportsWalker = /** @class */ (function (_super) {
-    __extends(NoImportsWalker, _super);
-    function NoImportsWalker() {
+var EnumCaseWalker = /** @class */ (function (_super) {
+    __extends(EnumCaseWalker, _super);
+    function EnumCaseWalker() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NoImportsWalker.prototype.visitEnumDeclaration = function (node) {
+    EnumCaseWalker.prototype.visitEnumDeclaration = function (node) {
         var _this = this;
         // check enum name
         if (!this.isCase(node.name.escapedText)) {
@@ -43,10 +46,10 @@ var NoImportsWalker = /** @class */ (function (_super) {
         });
         _super.prototype.visitEnumDeclaration.call(this, node);
     };
-    NoImportsWalker.prototype.report = function (node, text) {
-        this.addFailure(this.createFailure(node.getStart(), node.getWidth(), text + " should be pascal case."));
+    EnumCaseWalker.prototype.report = function (node, text) {
+        this.addFailure(this.createFailure(node.getStart(), node.getWidth(), text + " should be " + this.getOptions()[0] + " case."));
     };
-    NoImportsWalker.prototype.isCase = function (name) {
+    EnumCaseWalker.prototype.isCase = function (name) {
         var preferedCase = this.getOptions()[0]; // "pascal|camel|snake|kebab";
         var caseConverter = Case.pascal;
         switch (preferedCase) {
@@ -64,5 +67,5 @@ var NoImportsWalker = /** @class */ (function (_super) {
         }
         return name === caseConverter(name.toString());
     };
-    return NoImportsWalker;
+    return EnumCaseWalker;
 }(Lint.RuleWalker));

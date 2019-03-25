@@ -5,13 +5,13 @@ import * as ts from "typescript";
 export class Rule extends Lint.Rules.AbstractRule {
   public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
     return this.applyWithWalker(
-      new NoImportsWalker(sourceFile, this.getOptions())
+      new EnumCaseWalker(sourceFile, this.getOptions())
     );
   }
 }
 
 // The walker takes care of all the work.
-class NoImportsWalker extends Lint.RuleWalker {
+class EnumCaseWalker extends Lint.RuleWalker {
   public visitEnumDeclaration(node: ts.EnumDeclaration) {
     // check enum name
     if (!this.isCase(node.name.escapedText)) {
@@ -33,7 +33,7 @@ class NoImportsWalker extends Lint.RuleWalker {
       this.createFailure(
         node.getStart(),
         node.getWidth(),
-        text + " should be pascal case."
+        text + " should be " + this.getOptions()[0] + " case."
       )
     );
   }
